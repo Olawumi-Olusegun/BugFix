@@ -1,4 +1,4 @@
-import React from 'react';;
+import React, { cache } from 'react';;
 import prisma from '@/prisma/client';
 import { Box, Flex, Grid } from '@radix-ui/themes';
 import { notFound } from 'next/navigation';
@@ -16,6 +16,10 @@ interface Props {
     }
 }
 
+const fetchIssue = cache((issueId: number) => {
+    return prisma.issue.findUnique({where: {id: issueId}})
+})
+
 const IssueDetailPage = async ({ params}: Props ) => {
 
     const session = await getServerSession(authOptions);
@@ -26,9 +30,7 @@ const IssueDetailPage = async ({ params}: Props ) => {
         return notFound();
     }
 
-    const issue = await prisma.issue.findUnique({
-        where: { id: parseInt(params?.issueId) }
-    });
+    const issue = await fetchIssue(parseInt(params?.issueId));
 
     if(!issue) {
         return notFound();
@@ -57,7 +59,7 @@ const IssueDetailPage = async ({ params}: Props ) => {
 }
 
 export async function generateMetadata({params}: Props) {
-    const issue = await prisma.issue.findUnique({where: {id: parseInt(params?.issueId)}});
+    const issue = await await fetchIssue(parseInt(params?.issueId));
     return {
         title: issue?.title,
         description: `Details of bug fix - ${issue?.id}`
