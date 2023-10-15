@@ -1,10 +1,11 @@
 import React from 'react'
 import prisma from '@/prisma/client'
-import {Box, Flex} from '@radix-ui/themes'
+import {Flex} from '@radix-ui/themes'
 import IssueActions from './IssueActions'
 import {Status } from '@prisma/client';
 import Pagination from '@/app/components/Pagination'
 import IssueTable, { IssueQuery, columnNames } from './IssueTable'
+import { Metadata } from 'next';
 
 
 interface Props {
@@ -47,6 +48,13 @@ const IssuesPage = async ({searchParams}: Props) => {
         />
     </Flex>
   )
+}
+
+export const dynamic = "force-dynamic"
+
+export const metadata: Metadata =  {
+  title: "Bug Fix - Bug List",
+  description: "A list of paginated bug fixes"
 }
 
 export default IssuesPage
